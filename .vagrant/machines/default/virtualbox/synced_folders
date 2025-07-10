@@ -1,0 +1,1 @@
+{"virtualbox":{"/home/vagrant/devops-django/django-devops":{"guestpath":"/home/vagrant/devops-django/django-devops","hostpath":"C:/Users/user/Desktop/django_project/djangoapp/django-devops","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/Users/user/Desktop/django_project/djangoapp","disabled":false,"__vagrantfile":true}}}
