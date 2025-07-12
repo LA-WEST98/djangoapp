@@ -1,0 +1,5 @@
+{
+  "debug": true,
+  "secret_key": "your-secret-key",
+  "allowed_hosts": ["*"]
+}
