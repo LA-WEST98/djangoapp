@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds') // ID of your DockerHub credentials
         IMAGE_NAME = 'lawest98/djangoapp'
     }
 
@@ -23,10 +22,14 @@ pipeline {
 
         stage('Push to DockerHub') {
             steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-                        dockerImage.push()
-                        dockerImage.push('latest')
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        sh """
+                          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                          docker push ${IMAGE_NAME}:${env.BUILD_NUMBER}
+                          docker tag ${IMAGE_NAME}:${env.BUILD_NUMBER} ${IMAGE_NAME}:latest
+                          docker push ${IMAGE_NAME}:latest
+                        """
                     }
                 }
             }
@@ -35,10 +38,10 @@ pipeline {
 
     post {
         success {
-            echo "Image pushed: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
+            echo "✅ Image pushed: ${IMAGE_NAME}:${env.BUILD_NUMBER}"
         }
         failure {
-            echo 'Build or push failed!'
+            echo '❌ Build or push failed!'
         }
     }
 }
